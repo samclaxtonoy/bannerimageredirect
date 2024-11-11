@@ -1,1 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting...</title>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+  <script>
+    async function redirectToGoogleSheetURL() {
+      const spreadsheetId = '1ACwxD2RgrFIfLIyNS_FkUxKntFs0qDlaBDX3RPOMbmk';
+      const sheetName = 'Sheet1'; // Update with your actual sheet name
+      const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+      
+      try {
+        const response = await fetch(url);
+        const text = await response.text();
+        
+        // Strip Google Sheets' JSONP wrapper
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const targetUrl = json.table.rows[1].c[0].v; // Access the cell value
+
+        if (targetUrl) {
+          window.location.href = targetUrl;
+        } else {
+          console.error('Target URL not found in the specified cell.');
+        }
+      } catch (error) {
+        console.error('Error fetching URL from Google Sheet:', error);
+      }
+    }
+    
+    redirectToGoogleSheetURL();
+  </script>
+</body>
+</html>
 
